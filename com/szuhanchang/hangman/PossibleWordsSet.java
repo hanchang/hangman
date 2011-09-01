@@ -2,15 +2,13 @@ package com.szuhanchang.hangman;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
-// TODO: This really needs to extend set instead of wrapping it.
-public class PossibleWordsSet {
-	private Set<String> possibleWords = new HashSet<String>();
-	private CharacterFrequencyTable frequencyTable = new CharacterFrequencyTable();
+public class PossibleWordsSet extends HashSet<String> {
+	private final CharacterFrequencyTable frequencyTable = new CharacterFrequencyTable();
 	
 	private static final long serialVersionUID = 1L;
 
+	@Override
 	public boolean addAll(Collection<? extends String> collection) {
 		for (String s : collection) {
 			for (char c : s.toCharArray()) {
@@ -18,39 +16,25 @@ public class PossibleWordsSet {
 			}
 		}
 		
-		return possibleWords.addAll(collection);
+		return super.addAll(collection);
+	}
+	
+	@Override
+	public boolean remove(Object arg) {
+		String s = (String) arg;
+		for (char c : s.toCharArray()) {
+			frequencyTable.decrement(c);
+		}
+		return super.remove(arg);
 	}
 	
 	public String getLastWord() {
-		if (possibleWords.size() != 1) {
+		if (super.size() != 1) {
 			return null;
 		}
 		
-		String[] retval = possibleWords.toArray(new String[0]);
+		String[] retval = super.toArray(new String[0]);
 		return retval[0];
-	}
-	
-	public boolean remove(String arg) {
-		for (char c : arg.toCharArray()) {
-			frequencyTable.decrement(c);
-		}
-		return possibleWords.remove(arg);
-	}
-	
-	public void clear() {
-		possibleWords.clear();
-	}
-	
-	public int size() {
-		return possibleWords.size();
-	}
-	
-	public String[] toArray() {
-		return possibleWords.toArray(new String[0]);
-	}
-	
-	public String toString() {
-		return possibleWords.toString();
 	}
 	
 	public int clearCharacter(char c) {

@@ -16,10 +16,13 @@ public class HanChangGuessingStrategy implements GuessingStrategy {
     private char previousGuessedChar = ' ';
     protected int secretWordLength = -1;
     
+    private final String[] STRING_ARRAY_PLACEHOLDER = new String[0];
+    
     // Key: Number of characters in word.
     // Value: Set of words in dictionary that contain that many number of characters in word.
     protected final Map<Integer, Set<String>> dictionary = new HashMap<Integer, Set<String>>();
     
+    // Subset of words from dictionary that could still be the mystery word.
     protected final PossibleWordsSet possibleWords = new PossibleWordsSet();
     
     // Search algorithm for wildcards.
@@ -69,7 +72,7 @@ public class HanChangGuessingStrategy implements GuessingStrategy {
 		if (game.getCorrectlyGuessedLetters().contains(previousGuessedChar)) {
 			String pattern = game.getGuessedSoFar();
 			Object processed = bndmWild.processString(pattern, HangmanGame.MYSTERY_LETTER);
-			for (String word : possibleWords.toArray()) {
+			for (String word : possibleWords.toArray(STRING_ARRAY_PLACEHOLDER)) {
 				if (bndmWild.searchString(word, pattern, processed) == -1) {
 					possibleWords.remove(word);
 				}
@@ -81,7 +84,7 @@ public class HanChangGuessingStrategy implements GuessingStrategy {
 		else if (game.getIncorrectlyGuessedLetters().contains(previousGuessedChar)) {
 			// Remove all words in possibleWords containing the previously guessed letter.
 			String searchChar = Character.toString(previousGuessedChar);
-			for (String word : possibleWords.toArray()) {
+			for (String word : possibleWords.toArray(STRING_ARRAY_PLACEHOLDER)) {
 				if (StringUtils.containsAny(word, searchChar)) {
 					possibleWords.remove(word);
 				}
