@@ -8,13 +8,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.eaio.stringsearch.BNDMWildcards;
 
 public class HanChangGuessingStrategy implements GuessingStrategy {
-    final int LETTERS_IN_ALPHABET = 26; // Assume standard English alphabet for now.                    
-    final char[] alphabet = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
-    private int index = 0;
-    
+    private char previousGuessedChar = ' ';
     protected int secretWordLength = -1;
     
     // Key: Number of characters in word.
@@ -24,7 +23,7 @@ public class HanChangGuessingStrategy implements GuessingStrategy {
     protected final PossibleWordsSet possibleWords = new PossibleWordsSet();
     
     // Search algorithm for wildcards.
-    protected final BNDMWildcards bndm = new BNDMWildcards(HangmanGame.MYSTERY_LETTER);
+    protected final BNDMWildcards bndmWild = new BNDMWildcards(HangmanGame.MYSTERY_LETTER);
         
     public HanChangGuessingStrategy(String dictionaryPath) throws IOException {                         
         
@@ -41,7 +40,7 @@ public class HanChangGuessingStrategy implements GuessingStrategy {
                 if (!dictionary.containsKey(length)) {                                                  
                     dictionary.put(length, new HashSet<String>());                                      
                 }
-                dictionary.get(length).add(line);
+                dictionary.get(length).add(line.toUpperCase());
             }   
         } catch (IOException e) {
             e.printStackTrace();                                                                        
@@ -66,8 +65,37 @@ public class HanChangGuessingStrategy implements GuessingStrategy {
     }
 
 	public Guess nextGuess(HangmanGame game) {
-		char g = possibleWords.getCharacterWithHighestFrequency();
-		System.out.println("nextGuess: " + g);
-		return new GuessLetter(g);
+		// Update strategy with whether or not the previous guess was successful.
+		if (game.getCorrectlyGuessedLetters().contains(previousGuessedChar)) {
+			String pattern = game.getGuessedSoFar();
+			Object processed = bndmWild.processString(pattern, HangmanGame.MYSTERY_LETTER);
+			for (String word : possibleWords.toArray()) {
+				if (bndmWild.searchString(word, pattern, processed) == -1) {
+					possibleWords.remove(word);
+				}
+			}
+			
+			// Remove the correctly guessed letter from the frequencyTable since it won't ever be used again.
+			possibleWords.clearCharacter(previousGuessedChar);
+		}
+		else if (game.getIncorrectlyGuessedLetters().contains(previousGuessedChar)) {
+			// Remove all words in possibleWords containing the previously guessed letter.
+			String searchChar = Character.toString(previousGuessedChar);
+			for (String word : possibleWords.toArray()) {
+				if (StringUtils.containsAny(word, searchChar)) {
+					possibleWords.remove(word);
+				}
+			}
+		}
+		
+		System.out.println(possibleWords.toString());
+		
+		if (possibleWords.size() == 1) {
+			return new GuessWord(possibleWords.getLastWord());
+		}
+		
+		previousGuessedChar = possibleWords.getCharacterWithHighestFrequency();
+		System.out.println("nextGuess: " + previousGuessedChar);
+		return new GuessLetter(previousGuessedChar);
 	}
 }

@@ -205,6 +205,6 @@ class HangmanGame {
 
   @Override
   public String toString() {
-    return getGuessedSoFar() + "; score=" + currentScore() + "; status=" + gameStatus();
+    return getGuessedSoFar() + "; score=" + currentScore() + "; guesses_remaining=" + numWrongGuessesRemaining() + "; status=" + gameStatus();
   }
 }
