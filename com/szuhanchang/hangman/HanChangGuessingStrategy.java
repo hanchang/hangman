@@ -96,6 +96,11 @@ public class HanChangGuessingStrategy implements GuessingStrategy {
 		
 		System.out.println(state.possibleWords.toString());
 		
+		if (state.possibleWords.size() == 0 || state.possibleWords.getFrequencyTableSize() == 0) {
+			System.err.println("The secret word does not appear in the provided dictionary.");
+			System.exit(-1);
+		}
+		
 		if (state.possibleWords.size() == 1) {
 			return new GuessWord(state.possibleWords.getLastWord());
 		}

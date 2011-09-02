@@ -47,4 +47,8 @@ public class PossibleWordsSet extends HashSet<String> {
 	public char getCharacterWithHighestFrequency() {
 		return frequencyTable.getCharacterWithHighestFrequency();
 	}
+	
+	public int getFrequencyTableSize() {
+		return frequencyTable.size();
+	}
 }
