@@ -1,7 +1,7 @@
 Hangman
 =======
 
-This program plays the popular children's game Hangman: http://en.wikipedia.org/wiki/Hangman_(game) You as the user should supply a list of mystery words to the computer, which must guess the mystery word correctly within a specified number of mistakes to win. The default number of allowed mistakes is 5.
+This program plays the popular children's game Hangman: http://en.wikipedia.org/wiki/Hangman_(game) You as the user should supply a list of mystery words to the computer, which must guess the mystery word correctly within a specified number of mistakes to win. The default number of allowed mistakes is 5. To change the default number of allowed mistakes, you'll have to modify the source code; within the HangmanStrategyRunner.java file, there is a variable named `DEFAULT_WRONG_GUESSES`. Just modify this value to the desired number of allowed mistakes and recompile.
 
 Build
 -----
