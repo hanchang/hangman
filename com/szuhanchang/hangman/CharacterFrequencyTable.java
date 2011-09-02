@@ -9,52 +9,45 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CharacterFrequencyTable extends ConcurrentHashMap<Character, Integer> {
 	private static final long serialVersionUID = 1L;
 
-	final int LETTERS_IN_ALPHABET = 26; // Assume standard English alphabet for now.                    
-    
-	protected Map<Character, Integer> table = new ConcurrentHashMap<Character, Integer>(LETTERS_IN_ALPHABET);
+	final static int LETTERS_IN_ALPHABET = 26; // Assume standard English alphabet for now, case-insensitive.
 	
+	public CharacterFrequencyTable() {
+		super(LETTERS_IN_ALPHABET);
+	}
+    
 	public void increment(char character) {
-		Integer prevValue = table.get(character);
+		Integer prevValue = this.get(character);
 		if (prevValue == null) {
 			prevValue = 0;
 		}
-		table.put(character, prevValue + 1);
+		this.put(character, prevValue + 1);
 	}
 	
 	public void decrement(char character) {
-		Integer prevValue = table.get(character);
+		Integer prevValue = this.get(character);
 		if (prevValue == null) {
 			return;
 		}
-		table.put(character, prevValue - 1);
+		this.put(character, prevValue - 1);
 	}
 	
 	public int getFrequency(char character) {
-		return table.get(character);
-	}
-	
-	public int remove(char character) {
-		return table.remove(character);
+		return this.get(character);
 	}
 	
 	public char getCharacterWithHighestFrequency() {
-		System.out.println(table.toString());
-		// FIXME: This returns by alphabetic sorting. Fix to use frequency sorting.
+		//System.out.println(this.toString());
+
 		int max = 0;
 		char mostFrequentChar = ' ';
-		for (Entry<Character, Integer> e : table.entrySet()) {
+		for (Map.Entry<Character, Integer> e : this.entrySet()) {
 			if (e.getValue() == 0) {
-				table.remove(e.getKey());
+				this.remove(e.getKey());
 			}
 			else if (e.getValue() > max) {
 				max = e.getValue();
 				mostFrequentChar = e.getKey();
 			}
-		}
-		
-		if (mostFrequentChar == ' ') {
-			System.err.println("HORRIBLE THINGS HAVE HAPPENED");
-			System.exit(-1);
 		}
 		
 		return mostFrequentChar;
