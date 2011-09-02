@@ -13,31 +13,34 @@ import org.apache.commons.lang3.StringUtils;
 import com.eaio.stringsearch.BNDMWildcards;
 
 public class HanChangGuessingStrategy implements GuessingStrategy {
-    private char previousGuessedChar = ' ';
-    protected int secretWordLength = -1;
+	
+	public final static String[] STRING_ARRAY_PLACEHOLDER = new String[0];
+	protected char previousGuessedChar = ' ';
+	protected int secretWordLength = -1;
     
-    private final String[] STRING_ARRAY_PLACEHOLDER = new String[0];
-    
-    // Key: Number of characters in word.
-    // Value: Set of words in dictionary that contain that many number of characters in word.
+    /*
+     * Dictionary populated by list of words in a text file.
+     * 
+     * Key: Number of characters in word.
+     * Value: Set of words in dictionary that contain that many number of characters in word.
+     */
     protected final Map<Integer, Set<String>> dictionary = new HashMap<Integer, Set<String>>();
     
     // Subset of words from dictionary that could still be the mystery word.
     protected final PossibleWordsSet possibleWords = new PossibleWordsSet();
     
-    // Search algorithm for wildcards.
+    // Specialized, crazy fast search algorithm that handles wildcards.
     protected final BNDMWildcards bndmWild = new BNDMWildcards(HangmanGame.MYSTERY_LETTER);
         
     public HanChangGuessingStrategy(String dictionaryPath) throws IOException {                         
-        
     	BufferedReader inputStream = null; 
         
         try {                                                                                           
             inputStream = new BufferedReader(new FileReader(dictionaryPath));                           
             
             String line;                                                                                
-            while ((line = inputStream.readLine()) != null) {                                           
-                // TODO: trim line of whitespace.
+            while ((line = inputStream.readLine()) != null) { 
+            	line = line.trim();
                 // TODO: Make sure each character in the string is one of the 26 ASCII lowercase English alphabet characters.
                 int length = line.length();
                 if (!dictionary.containsKey(length)) {                                                  
@@ -68,7 +71,6 @@ public class HanChangGuessingStrategy implements GuessingStrategy {
     }
 
 	public Guess nextGuess(HangmanGame game) {
-		// Update strategy with whether or not the previous guess was successful.
 		if (game.getCorrectlyGuessedLetters().contains(previousGuessedChar)) {
 			String pattern = game.getGuessedSoFar();
 			Object processed = bndmWild.processString(pattern, HangmanGame.MYSTERY_LETTER);

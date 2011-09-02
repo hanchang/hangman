@@ -28,12 +28,15 @@ public class PossibleWordsSet extends HashSet<String> {
 		return super.remove(arg);
 	}
 	
+	/*
+	 * Retrieves the single remaining word in a set, otherwise returns null if the set is empty or has multiple elements.
+	 */
 	public String getLastWord() {
 		if (super.size() != 1) {
 			return null;
 		}
 		
-		String[] retval = super.toArray(new String[0]);
+		String[] retval = super.toArray(HanChangGuessingStrategy.STRING_ARRAY_PLACEHOLDER);
 		return retval[0];
 	}
 	

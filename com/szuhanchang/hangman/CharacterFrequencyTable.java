@@ -1,15 +1,17 @@
 package com.szuhanchang.hangman;
 
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CharacterFrequencyTable {
+/*
+ * Maps a character in the alphabet to the frequency in which it occurs in the PossibleWordsSet.
+ */
+public class CharacterFrequencyTable extends ConcurrentHashMap<Character, Integer> {
+	private static final long serialVersionUID = 1L;
+
 	final int LETTERS_IN_ALPHABET = 26; // Assume standard English alphabet for now.                    
     
-	// { character => frequency }
 	protected Map<Character, Integer> table = new ConcurrentHashMap<Character, Integer>(LETTERS_IN_ALPHABET);
-	// TODO: Needs a custom comparator.
 	
 	public void increment(char character) {
 		Integer prevValue = table.get(character);
