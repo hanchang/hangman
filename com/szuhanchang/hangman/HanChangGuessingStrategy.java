@@ -92,7 +92,7 @@ public class HanChangGuessingStrategy implements GuessingStrategy {
 			}
 		}
 		
-		System.out.println(possibleWords.toString());
+		//System.out.println(possibleWords.toString());
 		
 		if (possibleWords.size() == 0 || possibleWords.getFrequencyTableSize() == 0) {
 			System.err.println("The secret word does not appear in the provided dictionary.");
@@ -104,7 +104,7 @@ public class HanChangGuessingStrategy implements GuessingStrategy {
 		}
 		
 		previousGuessedChar = possibleWords.getCharacterWithHighestFrequency();
-		System.out.println("nextGuess: " + previousGuessedChar);
+		//System.out.println("nextGuess: " + previousGuessedChar);
 		return new GuessLetter(previousGuessedChar);
 	}
 }

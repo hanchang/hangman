@@ -65,7 +65,7 @@ public class HangmanStrategyRunner {
 		
 		while (game.gameStatus().equals(Status.KEEP_GUESSING)) {
 			strategy.nextGuess(game).makeGuess(game);
-			System.out.println(game);
+			//System.out.println(game);
 		}
 		
 		return game.currentScore();
