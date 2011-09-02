@@ -1,10 +1,10 @@
 package com.szuhanchang.hangman;
 
 import java.io.IOException;
+
 import com.szuhanchang.hangman.HangmanGame.Status;
 
 public class HangmanStrategyRunner {
-
 	/**
 	 * @param args
 	 */
