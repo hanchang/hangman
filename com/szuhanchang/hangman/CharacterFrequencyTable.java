@@ -36,7 +36,7 @@ public class CharacterFrequencyTable extends ConcurrentHashMap<Character, Intege
 	}
 	
 	public char getCharacterWithHighestFrequency() {
-		//System.out.println(this.toString());
+		//System.out.println(this.toString()); // DEBUG
 
 		int max = 0;
 		char mostFrequentChar = ' ';

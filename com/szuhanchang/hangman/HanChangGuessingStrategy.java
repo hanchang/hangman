@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.eaio.stringsearch.BNDMWildcards;
 
 public class HanChangGuessingStrategy implements GuessingStrategy {
+	// TODO: Add logging for easier debugging.
 	
 	public final static String[] STRING_ARRAY_PLACEHOLDER = new String[0];
 	
@@ -96,19 +97,25 @@ public class HanChangGuessingStrategy implements GuessingStrategy {
 			}
 		}
 		
-		//System.out.println(possibleWords.toString());
+		//System.out.println(possibleWords.toString()); // DEBUG
 		
 		if (possibleWords.size() == 0 || possibleWords.getFrequencyTableSize() == 0) {
 			System.err.println("The secret word does not appear in the provided dictionary.");
 			System.exit(-1);
 		}
 		
+		/*
+		 *  TODO: Add more heuristics to improve score.
+		 *  - If there are less possibleWords than letters remaining in the frequencyTable, 
+		 *  it may be more profitable to just guess the remaining words.
+		 */
+		
 		if (possibleWords.size() == 1) {
 			return new GuessWord(possibleWords.getLastWord());
 		}
 		
 		previousGuessedChar = possibleWords.getCharacterWithHighestFrequency();
-		//System.out.println("nextGuess: " + previousGuessedChar);
+		//System.out.println("nextGuess: " + previousGuessedChar); // DEBUG
 		return new GuessLetter(previousGuessedChar);
 	}
 }
