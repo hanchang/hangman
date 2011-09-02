@@ -1,6 +1,8 @@
 Hangman
 =======
 
+This program plays the popular children's game Hangman: http://en.wikipedia.org/wiki/Hangman_(game) You as the user should supply a list of mystery words to the computer, which must guess the mystery word correctly within a specified number of mistakes to win. The default number of allowed mistakes is 5.
+
 Build
 -----
 
@@ -54,13 +56,15 @@ Find the most frequent character and choose it as the next guess.
 
 When there is only one word remaining in P, guess that word.
 
-Algorithms Used
+Libraries Used
 ---------------
 
 I had originally planned on using regular expressions to handle the pattern matching but feared that it would be too slow.
 After doing a quick Google search I found Johann Burkard's StringSearch library (http://johannburkard.de/software/stringsearch/)
 which contains a Backward Nondeterministic Dawg (Directed Acyclic Word Graph) Matching algorithm, shortened as BNDM.
 There is a version containing wildcards which perfectly fits the matching of the mystery word status against the set of possible words.
+
+Additionally, the Apache Commons StringUtils library was used for the containsAny() method which determines whether a string contains a character.
 
 Design Considerations
 ---------------------
