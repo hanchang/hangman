@@ -1,0 +1,2 @@
+#!/bin/bash
+java -classpath lib/commons-lang3-3.0.1.jar:lib/stringsearch-2.jar:bin com.szuhanchang.hangman.HangmanStrategyRunner "$@"
