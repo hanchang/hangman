@@ -24,7 +24,7 @@ public class CharacterFrequencyTable extends ConcurrentHashMap<Character, Intege
 	public void decrement(char character) {
 		Integer prevValue = table.get(character);
 		if (prevValue == null) {
-			prevValue = 0;
+			return;
 		}
 		table.put(character, prevValue - 1);
 	}
