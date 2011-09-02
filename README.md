@@ -17,7 +17,7 @@ Run the bash executable named HangmanStrategyRunner, supplying it with the dicti
 Basic Strategy
 --------------
 
-I figured that the best bang for buck would come from analyzing the dictionary for character frequency, and then guessing the most frequently appearing character.
+I figured that the best bang for buck would come from analyzing the dictionary for character frequency, and then guessing the most frequently appearing character from the set of possible words from the dictionary that could be the mystery word.
 
 Algorithm
 ---------
