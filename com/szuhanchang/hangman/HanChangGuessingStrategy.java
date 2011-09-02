@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,7 +15,12 @@ import com.eaio.stringsearch.BNDMWildcards;
 public class HanChangGuessingStrategy implements GuessingStrategy {
 	
 	public final static String[] STRING_ARRAY_PLACEHOLDER = new String[0];
-	protected Map<Integer, StrategyGameState> stateMap = new ConcurrentHashMap<Integer, StrategyGameState>();
+	
+	char previousGuessedChar = ' ';
+	int secretWordLength = -1;
+	
+	// Subset of words from dictionary that could still be the mystery word.
+    final PossibleWordsSet possibleWords = new PossibleWordsSet();
 	
     /*
      * Dictionary populated by list of words in a text file.
@@ -24,10 +28,10 @@ public class HanChangGuessingStrategy implements GuessingStrategy {
      * Key: Number of characters in word.
      * Value: Set of words in dictionary that contain that many number of characters in word.
      */
-    protected final Map<Integer, Set<String>> dictionary = new HashMap<Integer, Set<String>>();
+    final Map<Integer, Set<String>> dictionary = new HashMap<Integer, Set<String>>();
     
     // Specialized, crazy fast search algorithm that handles wildcards.
-    protected final BNDMWildcards bndmWild = new BNDMWildcards(HangmanGame.MYSTERY_LETTER);
+    final BNDMWildcards bndmWild = new BNDMWildcards(HangmanGame.MYSTERY_LETTER);
         
     public HanChangGuessingStrategy(String dictionaryPath) throws IOException {                         
     	BufferedReader inputStream = null; 
@@ -55,58 +59,52 @@ public class HanChangGuessingStrategy implements GuessingStrategy {
     }
     
     public void init(HangmanGame game) {
-    	StrategyGameState state = new StrategyGameState();
-    	
-    	state.secretWordLength = game.getSecretWordLength();
+    	secretWordLength = game.getSecretWordLength();
     	
     	// Populate possibleWords based on length of secret word.
-    	state.possibleWords.clear();
-    	if (dictionary.get(state.secretWordLength) == null) {
+    	possibleWords.clear();
+    	if (dictionary.get(secretWordLength) == null) {
     		System.err.println("The secret word does not appear in the provided dictionary.");
     	}
-    	state.possibleWords.addAll(dictionary.get(state.secretWordLength));
-    	
-    	stateMap.put(game.hashCode(), state);
+    	possibleWords.addAll(dictionary.get(secretWordLength));
     }
 
 	public Guess nextGuess(HangmanGame game) {
-		StrategyGameState state = stateMap.get(game.hashCode());
-	    
-		if (game.getCorrectlyGuessedLetters().contains(state.previousGuessedChar)) {
+		if (game.getCorrectlyGuessedLetters().contains(previousGuessedChar)) {
 			String pattern = game.getGuessedSoFar();
 			Object processed = bndmWild.processString(pattern);
-			for (String word : state.possibleWords.toArray(STRING_ARRAY_PLACEHOLDER)) {
+			for (String word : possibleWords.toArray(STRING_ARRAY_PLACEHOLDER)) {
 				if (bndmWild.searchString(word, pattern, processed) == -1) {
-					state.possibleWords.remove(word);
+					possibleWords.remove(word);
 				}
 			}
 			
 			// Remove the correctly guessed letter from the frequencyTable since it won't ever be used again.
-			state.possibleWords.removeCharacter(state.previousGuessedChar);
+			possibleWords.removeCharacter(previousGuessedChar);
 		}
-		else if (game.getIncorrectlyGuessedLetters().contains(state.previousGuessedChar)) {
+		else if (game.getIncorrectlyGuessedLetters().contains(previousGuessedChar)) {
 			// Remove all words in possibleWords containing the previously guessed letter.
-			String searchChar = Character.toString(state.previousGuessedChar);
-			for (String word : state.possibleWords.toArray(STRING_ARRAY_PLACEHOLDER)) {
+			String searchChar = Character.toString(previousGuessedChar);
+			for (String word : possibleWords.toArray(STRING_ARRAY_PLACEHOLDER)) {
 				if (StringUtils.containsAny(word, searchChar)) {
-					state.possibleWords.remove(word);
+					possibleWords.remove(word);
 				}
 			}
 		}
 		
-		System.out.println(state.possibleWords.toString());
+		System.out.println(possibleWords.toString());
 		
-		if (state.possibleWords.size() == 0 || state.possibleWords.getFrequencyTableSize() == 0) {
+		if (possibleWords.size() == 0 || possibleWords.getFrequencyTableSize() == 0) {
 			System.err.println("The secret word does not appear in the provided dictionary.");
 			System.exit(-1);
 		}
 		
-		if (state.possibleWords.size() == 1) {
-			return new GuessWord(state.possibleWords.getLastWord());
+		if (possibleWords.size() == 1) {
+			return new GuessWord(possibleWords.getLastWord());
 		}
 		
-		state.previousGuessedChar = state.possibleWords.getCharacterWithHighestFrequency();
-		System.out.println("nextGuess: " + state.previousGuessedChar);
-		return new GuessLetter(state.previousGuessedChar);
+		previousGuessedChar = possibleWords.getCharacterWithHighestFrequency();
+		System.out.println("nextGuess: " + previousGuessedChar);
+		return new GuessLetter(previousGuessedChar);
 	}
 }
