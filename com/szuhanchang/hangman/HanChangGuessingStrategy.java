@@ -65,6 +65,7 @@ public class HanChangGuessingStrategy implements GuessingStrategy {
     	possibleWords.clear();
     	if (dictionary.get(secretWordLength) == null) {
     		System.err.println("The secret word does not appear in the provided dictionary.");
+    		System.exit(-1);
     	}
     	possibleWords.addAll(dictionary.get(secretWordLength));
     }
@@ -80,7 +81,10 @@ public class HanChangGuessingStrategy implements GuessingStrategy {
 			}
 			
 			// Remove the correctly guessed letter from the frequencyTable since it won't ever be used again.
-			possibleWords.removeCharacter(previousGuessedChar);
+			if (possibleWords.removeCharacter(previousGuessedChar) == null) {
+				System.err.println("The secret word does not appear in the provided dictionary.");
+				System.exit(-1);
+			}
 		}
 		else if (game.getIncorrectlyGuessedLetters().contains(previousGuessedChar)) {
 			// Remove all words in possibleWords containing the previously guessed letter.

@@ -46,7 +46,7 @@ public class PossibleWordsSet extends HashSet<String> {
 		return retval[0];
 	}
 	
-	public int removeCharacter(char c) {
+	public Integer removeCharacter(char c) {
 		return frequencyTable.remove(c);
 	}
 	
