@@ -34,7 +34,8 @@ public class HanChangGuessingStrategy implements GuessingStrategy {
     // Specialized, crazy fast search algorithm that handles wildcards.
     final BNDMWildcards bndmWild = new BNDMWildcards(HangmanGame.MYSTERY_LETTER);
         
-    public HanChangGuessingStrategy(String dictionaryPath) throws IOException {                         
+    public HanChangGuessingStrategy(String dictionaryPath) throws IOException {
+    	System.out.println("Starting HanChangGuessingStrategy...");
     	BufferedReader inputStream = null; 
         
         try {                                                                                           
