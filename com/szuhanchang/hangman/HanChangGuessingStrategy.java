@@ -74,7 +74,7 @@ public class HanChangGuessingStrategy implements GuessingStrategy {
 	    
 		if (game.getCorrectlyGuessedLetters().contains(state.previousGuessedChar)) {
 			String pattern = game.getGuessedSoFar();
-			Object processed = bndmWild.processString(pattern, HangmanGame.MYSTERY_LETTER);
+			Object processed = bndmWild.processString(pattern);
 			for (String word : state.possibleWords.toArray(STRING_ARRAY_PLACEHOLDER)) {
 				if (bndmWild.searchString(word, pattern, processed) == -1) {
 					state.possibleWords.remove(word);
@@ -82,7 +82,7 @@ public class HanChangGuessingStrategy implements GuessingStrategy {
 			}
 			
 			// Remove the correctly guessed letter from the frequencyTable since it won't ever be used again.
-			state.possibleWords.clearCharacter(state.previousGuessedChar);
+			state.possibleWords.removeCharacter(state.previousGuessedChar);
 		}
 		else if (game.getIncorrectlyGuessedLetters().contains(state.previousGuessedChar)) {
 			// Remove all words in possibleWords containing the previously guessed letter.

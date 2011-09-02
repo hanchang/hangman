@@ -28,6 +28,12 @@ public class PossibleWordsSet extends HashSet<String> {
 		return super.remove(arg);
 	}
 	
+	@Override
+	public void clear() {
+		frequencyTable.clear();
+		super.clear();
+	}
+	
 	/*
 	 * Retrieves the single remaining word in a set, otherwise returns null if the set is empty or has multiple elements.
 	 */
@@ -40,7 +46,7 @@ public class PossibleWordsSet extends HashSet<String> {
 		return retval[0];
 	}
 	
-	public int clearCharacter(char c) {
+	public int removeCharacter(char c) {
 		return frequencyTable.remove(c);
 	}
 	
